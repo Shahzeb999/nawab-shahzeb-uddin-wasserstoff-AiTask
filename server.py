@@ -13,7 +13,33 @@ logging.basicConfig(level=logging.INFO)
 def fetch_content_from_url(url):
     # Implement content fetching logic
     
-    return f'ju'
+    import requests
+
+
+# URL to fetch the content from
+
+def fetch_content(url):
+
+    fetch_url = f'https://r.jina.ai/{url}'
+
+    try:
+        # Make GET request to the provided URL
+        response = requests.get(fetch_url)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Print the response content
+            content = response.text
+            print(content)
+        else:
+            print(f"Error retrieving content: {response.status_code} - {response.text}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Request error: {e}")
+
+    return content
+
+
 
 @app.route('/update_embeddings', methods=['POST'])
 def update_embeddings():
