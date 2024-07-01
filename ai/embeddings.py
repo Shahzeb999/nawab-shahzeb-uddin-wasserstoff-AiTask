@@ -6,3 +6,5 @@ def generate_embeddings(text):
     model = "models/embedding-gecko-001"
     embeddings = palm.generate_embeddings(model=model, text=x)
     return embeddings['embedding']
+
+    
