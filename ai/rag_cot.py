@@ -1,13 +1,9 @@
 from langchain.chains import RetrievalQA, LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.llms import GooglePalm
-from langchain.chains import LLMChain
 from langchain.chains.question_answering import load_qa_chain
-from langchain.chains import RetrievalQA
-
-import time
 from google.api_core import retry
-
+import time
 
 # Define custom prompt templates
 rag_prompt_template = PromptTemplate(
@@ -18,7 +14,6 @@ rag_prompt_template = PromptTemplate(
     Please provide an initial response to the question based on the given context.
     """
 )
-
 
 thought_prompt_template = PromptTemplate(
     input_variables=["initial_response", "previous_context"],
@@ -63,12 +58,12 @@ refine_chain = LLMChain(llm=llm, prompt=refine_prompt_template)
 def process_query_with_chain_of_thought(user_query, previous_context, index):
     # Load the QA chain for RAG
     rag_chain = load_qa_chain(llm, chain_type="stuff", prompt=rag_prompt_template)
-    
+
     # Define the RetrievalQA chain
     retrieval_chain = RetrievalQA(combine_documents_chain=rag_chain, retriever=index.vectorstore.as_retriever())
 
     # Generate initial response
-    initial_response = retrieval_chain.run({'query': user_query})
+    initial_response = retrieval_chain.run({'query': user_query, 'context': previous_context})
 
     # Develop reasoning steps
     thought_steps = thought_chain.run(initial_response=initial_response, previous_context=previous_context)

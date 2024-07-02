@@ -7,12 +7,12 @@ def update_vector_database(url):
     try:
         loader = UnstructuredURLLoader(urls=[url])
         api_key = 'AIzaSyCFPXxgS8Stxq975EZSM9Rn71Q5naJXHqs'  # Replace with your actual API key
-        
+
         index = VectorstoreIndexCreator(
             embedding=GooglePalmEmbeddings(google_api_key=api_key),
             text_splitter=CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
         ).from_loaders([loader])
-        
+
         return index
     except Exception as e:
         raise Exception(f"Error in creating vector index: {e}")

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG-based Query Suggestion Chatbot with Chain of Thought</title>
     <title>AI Frontend</title>
     <style>
         body {
@@ -23,6 +24,8 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            overflow-y: auto;
+            max-height: 80vh;
         }
         .input-group {
             margin-bottom: 15px;
@@ -49,17 +52,24 @@
         .input-group button:hover {
             background-color: #0056b3;
         }
-        .response {
+        .conversation {
             margin-top: 20px;
             padding: 15px;
             background-color: #e9ecef;
             border-radius: 4px;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .message span {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <h1>RAG-based Query Suggestion Chatbot with Chain of Thought    </h1>
     <div class="input-group">
         <label for="url">Update Embeddings URL</label>
         <input type="text" id="url" placeholder="Enter URL">
@@ -72,7 +82,7 @@
         <button onclick="processQuery()">Process Query</button>
     </div>
 
-    <div class="response" id="response"></div>
+    <div class="conversation" id="conversation"></div>
 </div>
 
 <script>
@@ -87,9 +97,9 @@
                 body: JSON.stringify({ url }),
             });
             const result = await response.json();
-            document.getElementById('response').innerText = result.message;
+            document.getElementById('conversation').innerHTML += `<div class="message"><span>System:</span> ${result.message}</div>`;
         } catch (error) {
-            document.getElementById('response').innerText = 'Error updating embeddings';
+            document.getElementById('conversation').innerHTML += `<div class="message"><span>System:</span> Error updating embeddings</div>`;
         }
     }
 
@@ -101,12 +111,12 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ query, previous_context: '' }),  // Add previous_context if needed
+                body: JSON.stringify({ query }),
             });
             const result = await response.json();
-            document.getElementById('response').innerText = result.response;
+            document.getElementById('conversation').innerHTML += `<div class="message"><span>User:</span> ${query}</div><div class="message"><span>Bot:</span> ${result.response}</div>`;
         } catch (error) {
-            document.getElementById('response').innerText = 'Error processing query';
+            document.getElementById('conversation').innerHTML += `<div class="message"><span>System:</span> Error processing query</div>`;
         }
     }
 </script>
